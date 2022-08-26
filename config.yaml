@@ -1,0 +1,7 @@
+weather:
+  enable: true
+  dir: "./imgs/plmm"
+  url: "https://www.mxnzp.com/api/image/girl/list/random"
+  appId: ""
+  appSecret: ""
+
