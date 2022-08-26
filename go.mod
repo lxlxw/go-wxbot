@@ -1,13 +1,13 @@
-module github.com/yqchilde/wxbot
+module github.com/lxlxw/go-wxbot
 
 go 1.19
 
-replace github.com/yqchilde/wxbot/engine v0.0.1 => ./engine
+replace github.com/lxlxw/go-wxbot/engine v0.0.1 => ./engine
 
 require (
 	github.com/tidwall/gjson v1.14.2
 	github.com/yqchilde/pkgs v0.0.2
-	github.com/yqchilde/wxbot/engine v0.0.1
+	github.com/lxlxw/go-wxbot/engine v0.0.1
 )
 
 require (

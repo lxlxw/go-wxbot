@@ -1,0 +1,5 @@
+weather:
+  enable: true
+  url: "https://www.mxnzp.com/api/weather/current"
+  appId: "xxx"
+  appSecret: "xxx"

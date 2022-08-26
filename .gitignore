@@ -5,6 +5,6 @@
 imgs
 wxbot.log
 info-*.json
-config_example.yaml
+config.yaml
 storage.json
 docker/wxbot.tar

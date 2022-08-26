@@ -8,7 +8,7 @@ import (
 	"github.com/yqchilde/pkgs/log"
 	"gopkg.in/yaml.v3"
 
-	"github.com/yqchilde/wxbot/engine/config"
+	"github.com/lxlxw/go-wxbot/engine/config"
 )
 
 type PluginMagic struct {

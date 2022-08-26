@@ -11,8 +11,8 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"github.com/yqchilde/wxbot/engine"
-	"github.com/yqchilde/wxbot/engine/robot"
+	"github.com/lxlxw/go-wxbot/engine"
+	"github.com/lxlxw/go-wxbot/engine/robot"
 )
 
 type PinYinSuoXie struct{ engine.PluginMagic }

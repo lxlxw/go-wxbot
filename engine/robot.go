@@ -7,7 +7,7 @@ import (
 	"github.com/eatmoreapple/openwechat"
 	"github.com/yqchilde/pkgs/log"
 
-	"github.com/yqchilde/wxbot/engine/robot"
+	"github.com/lxlxw/go-wxbot/engine/robot"
 )
 
 func InitRobot() {

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yqchilde/wxbot/engine"
-	"github.com/yqchilde/wxbot/engine/robot"
+	"github.com/lxlxw/go-wxbot/engine"
+	"github.com/lxlxw/go-wxbot/engine/robot"
 )
 
 type CrazyKFC struct{ engine.PluginMagic }

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/yqchilde/wxbot/engine/robot"
+	"github.com/lxlxw/go-wxbot/engine/robot"
 )
 
 type Engine struct{}
