@@ -32,7 +32,7 @@ func InitRobot() {
 			return
 		}
 
-		reply := "YY Bot🤖\n"
+		reply := "Bobo Bot🤖\n"
 		for _, plugin := range Plugins {
 			if plugin.RawConfig["enable"] != false {
 				plugin.Config.OnEvent(&robot.Message{Message: msg})
@@ -115,7 +115,7 @@ func getGroupNicknameByGroupUsername(username string, nickname string, remarknam
 			return groups[0].NickName
 		} else {
 			groups = robot.Groups.SearchByRemarkName(1, remarkname)
-			return groups[0].NickName
+			return ""
 		}
 	} else {
 		return groups[0].NickName

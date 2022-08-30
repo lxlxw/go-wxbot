@@ -3,3 +3,13 @@ weather:
   url: "https://www.mxnzp.com/api/weather/current"
   appId: "xxx"
   appSecret: "xxx"
+
+lottery:
+  enable: true
+  url: "https://www.mxnzp.com/api/lottery/common/aim_lottery"
+  appId: "xxx"
+  appSecret: "xxx"
+
+crypto:
+  enable: true
+  url: "https://api.coingecko.com/api/v3/simple/price"

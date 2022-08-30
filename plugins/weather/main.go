@@ -24,7 +24,7 @@ var (
 	keyword    = "天气"
 	pluginInfo = &Weather{
 		PluginMagic: engine.PluginMagic{
-			Desc:     "🚀 输入 {city}天气 => 获取天气预报",
+			Desc:     "🚀 输入 {city}天气 => 获取天气预报 || 示例：北京天气",
 			Commands: []string{keyword},
 		},
 	}
