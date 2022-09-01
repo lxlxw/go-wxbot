@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/lxlxw/go-wxbot/engine"
+	_ "github.com/lxlxw/go-wxbot/plugins/chat"         // 聊天机器人
 	_ "github.com/lxlxw/go-wxbot/plugins/covid19"      // 疫情情况
 	_ "github.com/lxlxw/go-wxbot/plugins/crazykfc"     // 肯德基疯狂星期四
 	_ "github.com/lxlxw/go-wxbot/plugins/crypto"       // 加密货币
@@ -15,6 +16,7 @@ import (
 	_ "github.com/lxlxw/go-wxbot/plugins/pinyinsuoxie" // 拼音缩写翻译
 	_ "github.com/lxlxw/go-wxbot/plugins/stocks"       // 股票信息
 	_ "github.com/lxlxw/go-wxbot/plugins/weather"      // 天气预报
+	_ "github.com/lxlxw/go-wxbot/plugins/weibo"        // 微博热搜
 	_ "github.com/lxlxw/go-wxbot/plugins/worldcup"     // 世界杯
 )
 

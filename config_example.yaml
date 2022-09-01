@@ -13,3 +13,12 @@ lottery:
 crypto:
   enable: true
   url: "https://api.coingecko.com/api/v3/simple/price"
+
+chat:
+  enable: true
+  url:"https://api.qingyunke.com/api.php"
+
+weibo:
+  enable: true
+  url: "https://mrw.so/api.htm"
+  key: """

@@ -8,3 +8,4 @@ info-*.json
 config.yaml
 storage.json
 docker/wxbot.tar
+/tests
