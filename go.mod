@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/FloatTech/floatbox v0.0.0-20220822040527-f059031fec44 // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/akazwz/go-crawler v0.0.0-20220707143013-975c2eca6627 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
@@ -46,6 +47,7 @@ require (
 	github.com/robfig/cron v1.1.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

@@ -21,4 +21,10 @@ chat:
 weibo:
   enable: true
   url: "https://mrw.so/api.htm"
-  key: """
+  key: ""
+
+exchangerate:
+  enable: true
+  url: "https://www.mxnzp.com/api/exchange_rate/aim"
+  appId: ""
+  appSecret: ""
