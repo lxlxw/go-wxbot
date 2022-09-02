@@ -43,3 +43,8 @@ top:
   enable: true
   url: "https://v2.alapi.cn/api/tophub/get"
   key: ""
+
+cook:
+  enable: true
+  url: "https://way.jd.com/jisuapi/search"
+  key: ""

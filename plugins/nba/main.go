@@ -20,7 +20,7 @@ type NBA struct {
 }
 
 var (
-	keywords   = []string{"NBA赛程"}
+	keywords   = []string{"NBA赛程", "nba赛程", "nba联赛"}
 	pluginInfo = &NBA{
 		PluginMagic: engine.PluginMagic{
 			Desc:     "🚀 输入 NBA赛程 => 获取NBA近期赛程",

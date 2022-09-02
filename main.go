@@ -5,6 +5,7 @@ import (
 
 	"github.com/lxlxw/go-wxbot/engine"
 	_ "github.com/lxlxw/go-wxbot/plugins/chat"         // 聊天机器人
+	_ "github.com/lxlxw/go-wxbot/plugins/cook"         // 菜谱
 	_ "github.com/lxlxw/go-wxbot/plugins/covid19"      // 疫情情况
 	_ "github.com/lxlxw/go-wxbot/plugins/crazykfc"     // 肯德基疯狂星期四
 	_ "github.com/lxlxw/go-wxbot/plugins/crypto"       // 加密货币
