@@ -32,7 +32,7 @@ func InitRobot() {
 			return
 		}
 
-		reply := "Bobo Bot🤖\n"
+		reply := "Bobo Bot Beta🤖 欢迎您使用\n\n"
 		for _, plugin := range Plugins {
 			if plugin.RawConfig["enable"] != false {
 				plugin.Config.OnEvent(&robot.Message{Message: msg})

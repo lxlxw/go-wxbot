@@ -28,3 +28,18 @@ exchangerate:
   url: "https://www.mxnzp.com/api/exchange_rate/aim"
   appId: ""
   appSecret: ""
+
+football:
+enable: true
+url: "http://apis.juhe.cn/fapig/football/query"
+key: ""
+
+nba:
+  enable: true
+  url: "http://apis.juhe.cn/fapig/nba/query"
+  key: ""
+
+top:
+  enable: true
+  url: "https://v2.alapi.cn/api/tophub/get"
+  key: ""

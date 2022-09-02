@@ -107,7 +107,7 @@ func getWeiboTop() (string, error) {
 				log.Errorf("getWeiboDetail read body error: %v", err)
 				return
 			}
-			str += fmt.Sprintf(`%s、%s：%s`, rank, herfText, string(body))
+			str += fmt.Sprintf(`【%s】%s：%s`, rank, herfText, string(body))
 			str += "\n"
 			rankInt++
 		}
