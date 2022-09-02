@@ -48,3 +48,10 @@ cook:
   enable: true
   url: "https://way.jd.com/jisuapi/search"
   key: ""
+
+food:
+  enable: true
+  url1: "https://www.mxnzp.com/api/food_heat/food/search"
+  url2: "https://www.mxnzp.com/api/food_heat/food/details"
+  appId: ""
+  appSecret: ""

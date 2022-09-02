@@ -10,6 +10,7 @@ import (
 	_ "github.com/lxlxw/go-wxbot/plugins/crazykfc"     // 肯德基疯狂星期四
 	_ "github.com/lxlxw/go-wxbot/plugins/crypto"       // 加密货币
 	_ "github.com/lxlxw/go-wxbot/plugins/exchangerate" // 实时汇率
+	_ "github.com/lxlxw/go-wxbot/plugins/food"         // 食物营养成分
 	_ "github.com/lxlxw/go-wxbot/plugins/football"     // 五大联赛
 	_ "github.com/lxlxw/go-wxbot/plugins/gold"         // 黄金
 	_ "github.com/lxlxw/go-wxbot/plugins/jx3"          // jx3

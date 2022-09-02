@@ -4,20 +4,20 @@ type CookApiResponse struct {
 	Msg    string `json:"msg"`
 	Code   string `json:"code"`
 	Result struct {
-		Status string      `json:"status"`
+		Status interface{} `json:"status"`
 		Msg    string      `json:"msg"`
 		Result *CookResult `json:"result"`
 	} `json:"result"`
 }
 
 type CookResult struct {
-	Num  string      `json:"num"`
+	Num  interface{} `json:"num"`
 	List []*CookList `json:"list"`
 }
 
 type CookList struct {
-	Id          string      `json:"id"`
-	Classid     string      `json:"classid"`
+	Id          interface{} `json:"id"`
+	Classid     interface{} `json:"classid"`
 	Name        string      `json:"name"`
 	Peoplenum   string      `json:"peoplenum"`
 	Preparetime string      `json:"preparetime"`

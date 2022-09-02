@@ -24,7 +24,7 @@ var (
 	keyword    = "菜谱"
 	pluginInfo = &Cook{
 		PluginMagic: engine.PluginMagic{
-			Desc:     "🚀 输入 {name}菜谱 => 获取菜谱做法 || 示例：红烧排骨菜谱",
+			Desc:     "🚀 输入 {cook}菜谱 => 获取菜谱做法 || 示例：红烧排骨菜谱",
 			Commands: []string{keyword},
 		},
 	}
@@ -94,7 +94,7 @@ func getCook(msg *robot.Message) {
 		str += v.Mname + "：" + v.Amount + "\n"
 	}
 
-	str += "烹饪步骤：" + "\n"
+	str += "\n" + "烹饪步骤：" + "\n"
 	for k, v := range List0.Process {
 		str += "【" + strconv.Itoa(k+1) + "】" + v.Pcontent + "\n"
 	}
