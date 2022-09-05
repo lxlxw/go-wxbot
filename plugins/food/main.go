@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/lxlxw/go-wxbot/engine"
@@ -53,24 +54,36 @@ func getFood(msg *robot.Message, keyword string) {
 
 	foodName := strings.Trim(msg.Content, keyword)
 
-	apiUrl1 := fmt.Sprintf("%s?keyword=%s&page=1&app_id=%s&app_secret=%s", foodConf.Url1, foodName, foodConf.AppId, foodConf.AppSecret)
+	data := url.Values{}
+	data.Add("keyword", foodName)
+	data.Add("page", "1")
+	data.Add("app_id", foodConf.AppId)
+	data.Add("app_secret", foodConf.AppSecret)
 
-	res, err := http.Get(apiUrl1)
+	u, _ := url.ParseRequestURI("https://www.mxnzp.com")
+
+	u.Path = "/api/food_heat/food/search/"
+	u.RawQuery = data.Encode()
+	urlStr := fmt.Sprintf("%v", u)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", urlStr, nil)
 	if err != nil {
-		log.Errorf("getFood http get error: %v", err)
 		return
 	}
+	res, _ := client.Do(req)
+
 	defer res.Body.Close()
 
-	body, err := io.ReadAll(res.Body)
+	body1, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Errorf("getFood read body error: %v", err)
 		return
 	}
 
 	var resp FoodApiResponse
-	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Errorf("getCook unmarshal error: %v", err)
+	if err := json.Unmarshal(body1, &resp); err != nil {
+		log.Errorf("getFood read body error: %v", err)
 		return
 	}
 	if resp.Code != 1 {
@@ -94,14 +107,23 @@ func getFood(msg *robot.Message, keyword string) {
 		}
 	}
 
-	// get food detail
-	apiUrl2 := fmt.Sprintf("%s?foodId=%s&page=1&app_id=%s&app_secret=%s", foodConf.Url2, foodId, foodConf.AppId, foodConf.AppSecret)
+	data2 := url.Values{}
+	data2.Add("foodId", foodId)
+	data2.Add("page", "1")
+	data2.Add("app_id", foodConf.AppId)
+	data2.Add("app_secret", foodConf.AppSecret)
 
-	res2, err := http.Get(apiUrl2)
+	u2, _ := url.ParseRequestURI("https://www.mxnzp.com")
+
+	u2.Path = "/api/food_heat/food/details/"
+	u2.RawQuery = data2.Encode()
+	urlStr2 := fmt.Sprintf("%v", u2)
+	client2 := &http.Client{}
+	req2, err := http.NewRequest("GET", urlStr2, nil)
 	if err != nil {
-		log.Errorf("getFood http get error: %v", err)
 		return
 	}
+	res2, _ := client2.Do(req2)
 	defer res2.Body.Close()
 
 	body2, err := io.ReadAll(res2.Body)
@@ -111,12 +133,12 @@ func getFood(msg *robot.Message, keyword string) {
 	}
 
 	var resp2 FoodDetailResponse
-	if err := json.Unmarshal(body2, &resp); err != nil {
+	if err := json.Unmarshal(body2, &resp2); err != nil {
 		log.Errorf("getCook unmarshal error: %v", err)
 		return
 	}
 	if resp2.Code != 1 {
-		log.Errorf("getFood api error: %v", resp.Msg)
+		log.Errorf("getFood api error: %v", resp2.Msg)
 		return
 	}
 

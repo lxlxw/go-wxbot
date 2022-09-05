@@ -28,9 +28,9 @@ type CookList struct {
 }
 
 type Material struct {
-	Mname    string `json:"mname"`
-	Nametype string `json:"type"`
-	Amount   string `json:"amount"`
+	Mname    string      `json:"mname"`
+	Nametype interface{} `json:"type"`
+	Amount   string      `json:"amount"`
 }
 
 type Process struct {
