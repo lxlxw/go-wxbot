@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/lxlxw/go-wxbot/engine"
@@ -22,11 +21,11 @@ type Crypto struct {
 }
 
 var (
-	keywords   = []string{"/btc", "/eth", "/比特币", "/以太坊"}
-	otherName  = "数字货币"
+	keywords   = []string{"$btc", "$eth"}
+	keyword    = "$"
 	pluginInfo = &Crypto{
 		PluginMagic: engine.PluginMagic{
-			Desc:     "🚀 输入 数字货币{name} => 获取加密货币信息 || 示例：数字货币btc | /btc | /eth",
+			Desc:     "🚀 输入 $btc => 获取加密货币信息 || 示例：$btc | $eth",
 			Commands: keywords,
 		},
 	}
@@ -40,8 +39,8 @@ func (p *Crypto) OnEvent(msg *robot.Message) {
 	if msg != nil {
 		if msg.IsText() {
 			for _, v := range keywords {
-				if msg.Content == v || strings.Contains(msg.Content, otherName) {
-					getCryptoDetail(msg, msg.Content)
+				if msg.Content == v || strings.Contains(msg.Content, keyword) {
+					getCryptoDetail(msg)
 					return
 				}
 			}
@@ -49,35 +48,25 @@ func (p *Crypto) OnEvent(msg *robot.Message) {
 	}
 }
 
-func getCryptoCode(keyword string) (string, string) {
+func getCryptoCode(content string) (string, string) {
 	var code string
 	var symbol string
-	if keyword == "/比特币" || keyword == "/btc" {
-		code = "BTCUSDT"
-		symbol = "BTC"
-
-	} else if keyword == "/以太坊" || keyword == "/eth" {
-		code = "ETHUSDT"
-		symbol = "ETH"
-	} else if strings.Contains(keyword, otherName) {
-		code = strings.Trim(keyword, otherName)
+	if strings.Contains(content, keyword) {
+		code = strings.Trim(content, keyword)
 		symbol = code
 		symbol = strings.ToUpper(symbol)
-		code = code + "usdt"
+		code = code + "-USD"
 		code = strings.ToUpper(code)
 	}
 	return code, symbol
 }
 
-func getCryptoDetail(msg *robot.Message, keyword string) {
+func getCryptoDetail(msg *robot.Message) {
 
-	var cryptoConf Crypto
-	plugin.RawConfig.Unmarshal(&cryptoConf)
+	code, symbol := getCryptoCode(msg.Content)
 
-	code, symbol := getCryptoCode(keyword)
+	apiUrl := fmt.Sprintf("https://api.blockchain.com/v3/exchange/tickers/%s", code)
 
-	apiUrl := fmt.Sprintf("%s?symbol=%s", cryptoConf.Url, code)
-	log.Println(apiUrl)
 	res, err := http.Get(apiUrl)
 	if err != nil {
 		log.Errorf("getCryptoDetail http get error: %v", err)
@@ -95,8 +84,7 @@ func getCryptoDetail(msg *robot.Message, keyword string) {
 		log.Errorf("getCryptoDetail unmarshal error: %v", err)
 		return
 	}
-	priceFloat, _ := strconv.ParseFloat(resp.Price, 64)
-	price := fmt.Sprintf("%.3f", priceFloat)
+	price := fmt.Sprintf("%.4f", resp.Last_trade_price)
 
 	detail := fmt.Sprintf(`%s Price：$%s`, symbol, price)
 
