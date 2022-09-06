@@ -22,6 +22,7 @@ type Cook struct {
 
 var (
 	keyword    = "菜谱"
+	notFound   = "未找到该菜谱做法"
 	pluginInfo = &Cook{
 		PluginMagic: engine.PluginMagic{
 			Desc:     "🚀 输入 {cook}菜谱 => 获取菜谱做法 || 示例：红烧排骨菜谱",
@@ -36,7 +37,7 @@ func (p *Cook) OnRegister() {
 
 func (p *Cook) OnEvent(msg *robot.Message) {
 	if msg != nil {
-		if msg.IsText() && strings.Contains(msg.Content, pluginInfo.Commands[0]) {
+		if msg.IsText() && strings.Contains(msg.Content, pluginInfo.Commands[0]) && msg.Content != notFound {
 			getCook(msg)
 		}
 	}
@@ -78,7 +79,7 @@ func getCook(msg *robot.Message) {
 
 	if len(resp.Result.Result.List) <= 0 {
 		log.Errorf("getCook api error: %v", resp.Msg)
-		str = "未找到该菜谱做法"
+		str = notFound
 		msg.ReplyText(str)
 		return
 	}

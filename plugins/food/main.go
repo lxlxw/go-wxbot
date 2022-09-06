@@ -24,6 +24,7 @@ type Food struct {
 
 var (
 	keywords   = []string{"营养成分", "热量", "能量", "脂肪", "蛋白质"}
+	notFound   = "未找到该食物营养成分表"
 	pluginInfo = &Food{
 		PluginMagic: engine.PluginMagic{
 			Desc:     "🚀 输入 {food}营养成分 => 获取食物营养成分 || 示例：香蕉营养成分",
@@ -39,7 +40,7 @@ func (p *Food) OnRegister() {
 func (p *Food) OnEvent(msg *robot.Message) {
 	if msg != nil {
 		for _, v := range keywords {
-			if strings.Contains(msg.Content, v) {
+			if strings.Contains(msg.Content, v) && msg.Content != notFound {
 				getFood(msg, v)
 				return
 			}
@@ -95,7 +96,7 @@ func getFood(msg *robot.Message, keyword string) {
 
 	if len(resp.Result.List) <= 0 {
 		log.Errorf("getFood api error: %v", resp.Msg)
-		str = "未找到该食物营养成分表"
+		str = notFound
 		msg.ReplyText(str)
 		return
 	}
@@ -103,7 +104,7 @@ func getFood(msg *robot.Message, keyword string) {
 	for _, v := range resp.Result.List {
 		if v.Name == foodName {
 			foodId = v.FoodId
-			continue
+			break
 		}
 	}
 
