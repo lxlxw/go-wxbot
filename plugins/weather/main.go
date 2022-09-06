@@ -3,21 +3,25 @@ package weather
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"strings"
-
 	"github.com/lxlxw/go-wxbot/engine"
 	"github.com/lxlxw/go-wxbot/engine/robot"
 	"github.com/yqchilde/pkgs/log"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
 )
 
 type Weather struct {
 	engine.PluginMagic
-	Enable    bool   `yaml:"enable"`
-	Url       string `yaml:"url"`
-	AppId     string `yaml:"appId"`
-	AppSecret string `yaml:"appSecret"`
+	Enable      bool   `yaml:"enable"`
+	Key         string `yaml:"key"`
+	LocationUrl string `yaml:"locationUrl"`
+	ActualUrl   string `yaml:"actualUrl"`
+	LifeUrl     string `yaml:"lifeUrl"`
+	AirUrl      string `yaml:"airUrl"`
+	WarningUrl  string `yaml:"warningUrl"`
+	SunUrl      string `yaml:"sunUrl"`
 }
 
 var (
@@ -30,6 +34,8 @@ var (
 	}
 	plugin = engine.InstallPlugin(pluginInfo)
 )
+
+var weatherConf Weather
 
 func (p *Weather) OnRegister() {
 }
@@ -44,14 +50,21 @@ func (p *Weather) OnEvent(msg *robot.Message) {
 
 func getWeatherDetail(msg *robot.Message) {
 
-	var weatherConf Weather
+	var urlMap = map[string]string{
+		"实时天气": weatherConf.ActualUrl,
+		"空气指数": weatherConf.AirUrl,
+		"日出日落": weatherConf.SunUrl,
+		"生活指数": weatherConf.LifeUrl,
+		"气象预警": weatherConf.WarningUrl,
+	}
+	detail := ""
 	plugin.RawConfig.Unmarshal(&weatherConf)
 
 	cityName := strings.Trim(msg.Content, keyword)
 
-	apiUrl := fmt.Sprintf("%s/%s?app_id=%s&app_secret=%s", weatherConf.Url, cityName, weatherConf.AppId, weatherConf.AppSecret)
+	localtionUrl := fmt.Sprintf("%s?location=%s&key=%s", weatherConf.LocationUrl, url.QueryEscape(cityName), weatherConf.Key)
 
-	res, err := http.Get(apiUrl)
+	res, err := http.Get(localtionUrl)
 	if err != nil {
 		log.Errorf("getWeatherDetail http get error: %v", err)
 		return
@@ -63,18 +76,51 @@ func getWeatherDetail(msg *robot.Message) {
 		return
 	}
 
-	var resp WeatherApiResponse
+	var resp ResponseWeatherLocaltion
 	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Errorf("getWeatherDetail unmarshal error: %v", err)
+		log.Errorf("getWeatherDetail unmarshal error: %v", localtionUrl)
 		return
 	}
-	if resp.Code != 1 {
-		log.Errorf("getWeatherDetail api error: %v", resp.Msg)
+	if resp.Code != "200" {
+		log.Errorf("getWeatherDetail api error: 未查询到城市信息")
+		detail = "未查询到城市信息"
+		msg.ReplyText(detail)
 		return
 	}
 
-	detail := fmt.Sprintf(`%s今天天气，温度为 %s ，天气 %s，%s %s，相对湿度 %s`, resp.Data.Address,
-		resp.Data.Temp, resp.Data.Weather, resp.Data.WindDirection, resp.Data.WindPower, resp.Data.Humidity)
+	locationID := resp.Location[0].ID
+
+	detalMap := map[string]string{}
+
+	for k, v := range urlMap {
+		info, err := Factory(k)
+		if err != nil {
+			log.Errorf("error: %v", err)
+			return
+		}
+		detalMap[k] = info.GetInfo(v, locationID)
+	}
+
+	//TODO 并发请求
+	//wg := &sync.WaitGroup{}
+	//for k, v := range urlMap {
+	//	wg.Add(1)
+	//	go func(url string) {
+	//		info, err := Factory(k)
+	//		if err != nil {
+	//			log.Errorf("error: %v", err)
+	//			return
+	//		}
+	//		detalMap[k] = info.GetInfo(url, locationID)
+	//	}(v)
+	//	wg.Done()
+	//}
+	//wg.Wait()
+
+	detail = resp.Location[0].Name + "天气\n"
+	for k, _ := range urlMap {
+		detail += detalMap[k]
+	}
 
 	msg.ReplyText(detail)
 

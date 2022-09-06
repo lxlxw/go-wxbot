@@ -74,7 +74,7 @@ func getOil(msg *robot.Message) {
 	detail := "未查询到该城市油价"
 	for _, v := range resp.Result {
 		if v.City == provinceName {
-			detail = fmt.Sprintf("【%s今天油价】\n92汽油价格：%s\n95汽油价格：%s\n98汽油价格：%s\n0号柴油价格：%s\n", v.City,
+			detail = fmt.Sprintf("%s油价\n92汽油价格：%s\n95汽油价格：%s\n98汽油价格：%s\n0号柴油价格：%s\n", v.City,
 				v.Oil92h, v.Oil95h, v.Oil98h, v.Oil0h)
 		}
 	}
