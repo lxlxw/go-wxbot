@@ -1,6 +1,9 @@
 package jx3
 
 import (
+	"math/rand"
+	"strconv"
+
 	"github.com/lxlxw/go-wxbot/engine"
 	"github.com/lxlxw/go-wxbot/engine/robot"
 )
@@ -51,6 +54,11 @@ func (p *Jx3) OnEvent(msg *robot.Message) {
 					getJx3Detail(msg, msg.Content)
 					return
 				}
+			}
+			if msg.Content == "/roll" {
+				ranInt := rand.Intn(100)
+				msg.ReplyText(strconv.Itoa(ranInt))
+				return
 			}
 		}
 	}
