@@ -16,7 +16,6 @@ type Crypto struct {
 	engine.PluginMagic
 	Enable    bool   `yaml:"enable"`
 	Url       string `yaml:"url"`
-	AppId     string `yaml:"appId"`
 	AppSecret string `yaml:"appSecret"`
 }
 
@@ -48,31 +47,26 @@ func (p *Crypto) OnEvent(msg *robot.Message) {
 	}
 }
 
-func getCryptoCode(content string) (string, string) {
-	var code string
-	var symbol string
-	if strings.Contains(content, keyword) {
-		code = strings.Trim(content, keyword)
-		symbol = code
-		symbol = strings.ToUpper(symbol)
-		code = code + "-USD"
-		code = strings.ToUpper(code)
-	}
-	return code, symbol
-}
-
 func getCryptoDetail(msg *robot.Message) {
 
-	code, symbol := getCryptoCode(msg.Content)
+	var cryptoConf Crypto
+	plugin.RawConfig.Unmarshal(&cryptoConf)
 
-	apiUrl := fmt.Sprintf("https://api.blockchain.com/v3/exchange/tickers/%s", code)
+	code := strings.Trim(msg.Content, keyword)
+	code = strings.ToUpper(code)
 
-	res, err := http.Get(apiUrl)
+	apiUrl := fmt.Sprintf("%s?symbol=%s&interval=0", cryptoConf.Url, code)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", apiUrl, nil)
+
+	req.Header.Add("coinglassSecret", cryptoConf.AppSecret)
 	if err != nil {
-		log.Errorf("getCryptoDetail http get error: %v", err)
 		return
 	}
+	res, _ := client.Do(req)
 	defer res.Body.Close()
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Errorf("getCryptoDetail read body error: %v", err)
@@ -84,9 +78,22 @@ func getCryptoDetail(msg *robot.Message) {
 		log.Errorf("getCryptoDetail unmarshal error: %v", err)
 		return
 	}
-	price := fmt.Sprintf("%.4f", resp.Last_trade_price)
+	if resp.Code != "0" {
+		return
+	}
+	var str string
+	if len(resp.List) <= 0 {
+		return
+	}
 
-	detail := fmt.Sprintf(`%s Price：$%s`, symbol, price)
+	for _, v := range resp.List {
+		if v.ExchangeName != "All" {
+			price := fmt.Sprintf("%f", v.Price)
+			str += code + " Price：" + price + "\n\n"
+			str += "数据来源：" + v.ExchangeName
+			break
+		}
+	}
 
-	msg.ReplyText(detail)
+	msg.ReplyText(str)
 }

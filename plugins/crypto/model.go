@@ -1,6 +1,13 @@
 package crypto
 
 type CryptoApiResponse struct {
-	Symbol           string  `json:"symbol"`
-	Last_trade_price float64 `json:"last_trade_price"`
+	Code string        `json:"code"`
+	Msg  string        `json:"msg"`
+	List []*CryptoList `json:"data"`
+}
+
+type CryptoList struct {
+	Symbol       string  `json:"symbol"`
+	Price        float64 `json:"price"`
+	ExchangeName string  `json:"exchangeName"`
 }
