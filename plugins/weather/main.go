@@ -103,17 +103,17 @@ func getWeatherDetail(msg *robot.Message) {
 
 	//TODO 并发请求
 	//wg := &sync.WaitGroup{}
+	//wg.Add(len(urlMap))
 	//for k, v := range urlMap {
-	//	wg.Add(1)
-	//	go func(url string) {
+	//	go func(k string, url string) {
+	//		defer wg.Done()
 	//		info, err := Factory(k)
 	//		if err != nil {
 	//			log.Errorf("error: %v", err)
 	//			return
 	//		}
 	//		detalMap[k] = info.GetInfo(url, locationID)
-	//	}(v)
-	//	wg.Done()
+	//	}(k, v)
 	//}
 	//wg.Wait()
 

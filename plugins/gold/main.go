@@ -69,18 +69,21 @@ func GetGold(msg *robot.Message) {
 		return
 	}
 
-	str := "【黄金价格】\n"
+	str := "黄金价格\n"
 	for _, v := range resp.Result {
 		for _, v := range v {
-			str += "品种：" + v.Variety + "\n"
-			str += "最新价：" + v.Latestpri + "\n"
-			str += "开盘价：" + v.Openpri + "\n"
-			str += "最高价：" + v.Maxpri + "\n"
-			str += "最低价：" + v.Minpri + "\n"
-			str += "涨跌幅：" + v.Limit + "\n"
-			str += "昨收价：" + v.Yespri + "\n"
-			str += "总成交量：" + v.Totalvol + "\n"
-			str += "更新时间：" + v.Time + "\n"
+			if v.Variety == "AU99.99" {
+				str += "品种：" + v.Variety + "\n"
+				str += "最新价：" + v.Latestpri + "\n"
+				str += "开盘价：" + v.Openpri + "\n"
+				str += "最高价：" + v.Maxpri + "\n"
+				str += "最低价：" + v.Minpri + "\n"
+				str += "涨跌幅：" + v.Limit + "\n"
+				str += "昨收价：" + v.Yespri + "\n"
+				str += "总成交量：" + v.Totalvol + "\n"
+				str += "更新时间：" + v.Time + "\n"
+			}
+
 		}
 	}
 
