@@ -20,7 +20,7 @@ type Chat struct {
 }
 
 var (
-	keyword    = "@机器人"
+	keyword    = "@Bobo Bot"
 	pluginInfo = &Chat{
 		PluginMagic: engine.PluginMagic{
 			Desc:     "🚀 @Bot名称 => 跟它聊天",
