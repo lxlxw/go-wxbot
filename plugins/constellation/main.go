@@ -57,7 +57,7 @@ func geConstellationDetail(msg *robot.Message) {
 	var exConf Constellation
 	plugin.RawConfig.Unmarshal(&exConf)
 
-	consName := "双鱼座今年运势"
+	consName := msg.Content
 	var dateType string
 	consName = strings.Trim(consName, keyword)
 	for _, v := range dateKeyword {
