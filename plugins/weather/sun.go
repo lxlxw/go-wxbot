@@ -11,12 +11,10 @@ import (
 
 type SunInfo struct{}
 
-func (c *SunInfo) GetInfo(url string, locationID string) string {
+func (c *SunInfo) GetInfo(locationID string) string {
 
 	detail := ""
-	now := time.Now()
-
-	url = fmt.Sprintf("%s?location=%s&key=%s&date=%s", url, locationID, weatherConf.Key, now.Format("20060102"))
+	url := fmt.Sprintf("%s?location=%s&key=%s&date=%s", weatherConf.SunUrl, locationID, weatherConf.Key, time.Now().Format("20060102"))
 
 	res, err := http.Get(url)
 	if err != nil {

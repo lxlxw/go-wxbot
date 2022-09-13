@@ -5,7 +5,7 @@ import (
 )
 
 type Info interface {
-	GetInfo(url string, locationID string) string
+	GetInfo(locationID string) string
 }
 
 func Factory(urlType string) (info Info, err error) {

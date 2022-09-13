@@ -11,10 +11,10 @@ import (
 
 type WarningInfo struct{}
 
-func (c *WarningInfo) GetInfo(url string, locationID string) string {
+func (c *WarningInfo) GetInfo(locationID string) string {
 
 	detail := "灾害预警：无"
-	url = fmt.Sprintf("%s?location=%s&key=%s", url, locationID, weatherConf.Key)
+	url := fmt.Sprintf("%s?location=%s&key=%s", weatherConf.WarningUrl, locationID, weatherConf.Key)
 
 	res, err := http.Get(url)
 	if err != nil {

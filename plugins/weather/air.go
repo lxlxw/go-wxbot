@@ -10,10 +10,10 @@ import (
 
 type AirInfo struct{}
 
-func (c *AirInfo) GetInfo(url string, locationID string) string {
+func (c *AirInfo) GetInfo(locationID string) string {
 
 	detail := ""
-	url = fmt.Sprintf("%s?location=%s&key=%s", url, locationID, weatherConf.Key)
+	url := fmt.Sprintf("%s?location=%s&key=%s", weatherConf.AirUrl, locationID, weatherConf.Key)
 
 	res, err := http.Get(url)
 	if err != nil {

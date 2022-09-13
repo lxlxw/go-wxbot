@@ -37,6 +37,8 @@ var (
 
 var weatherConf Weather
 
+var infoMap = []string{"实时天气", "空气指数", "日出日落", "生活指数", "气象预警"}
+
 func (p *Weather) OnRegister() {
 }
 
@@ -50,13 +52,6 @@ func (p *Weather) OnEvent(msg *robot.Message) {
 
 func getWeatherDetail(msg *robot.Message) {
 
-	var urlMap = map[string]string{
-		"实时天气": weatherConf.ActualUrl,
-		"空气指数": weatherConf.AirUrl,
-		"日出日落": weatherConf.SunUrl,
-		"生活指数": weatherConf.LifeUrl,
-		"气象预警": weatherConf.WarningUrl,
-	}
 	detail := ""
 	plugin.RawConfig.Unmarshal(&weatherConf)
 
@@ -92,13 +87,13 @@ func getWeatherDetail(msg *robot.Message) {
 
 	detalMap := map[string]string{}
 
-	for k, v := range urlMap {
-		info, err := Factory(k)
+	for _, v := range infoMap {
+		info, err := Factory(v)
 		if err != nil {
 			log.Errorf("error: %v", err)
 			return
 		}
-		detalMap[k] = info.GetInfo(v, locationID)
+		detalMap[v] = info.GetInfo(locationID)
 	}
 
 	//TODO 并发请求
@@ -118,8 +113,8 @@ func getWeatherDetail(msg *robot.Message) {
 	//wg.Wait()
 
 	detail = resp.Location[0].Name + "天气\n"
-	for k, _ := range urlMap {
-		detail += detalMap[k]
+	for _, v := range infoMap {
+		detail += detalMap[v]
 	}
 
 	msg.ReplyText(detail)
