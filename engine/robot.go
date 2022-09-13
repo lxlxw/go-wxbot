@@ -15,7 +15,7 @@ func InitRobot() {
 	bot := openwechat.DefaultBot(openwechat.Desktop)
 
 	// 关闭心跳回调
-	bot.SyncCheckCallback = nil
+	//bot.SyncCheckCallback = nil
 
 	// 登陆二维码回调
 	bot.UUIDCallback = openwechat.PrintlnQrcodeUrl
