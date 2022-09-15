@@ -1,7 +1,11 @@
 package jx3
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
 	"strconv"
 
 	"github.com/lxlxw/go-wxbot/engine"
@@ -60,8 +64,59 @@ func (p *Jx3) OnEvent(msg *robot.Message) {
 				msg.ReplyText(strconv.Itoa(ranInt))
 				return
 			}
+			if msg.Content == "吃什么" {
+				getEat(msg)
+				return
+			}
 		}
 	}
+}
+
+type EatApiResponse struct {
+	Code int      `json:"code"`
+	Msg  string   `json:"msg"`
+	List []string `json:"data"`
+}
+
+func getEat(msg *robot.Message) {
+
+	apiUrl := fmt.Sprintf("%s?size=7", "https://eolink.o.apispace.com/eat222/api/v1/forward/chishenme")
+	println(apiUrl)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", apiUrl, nil)
+
+	req.Header.Add("X-APISpace-Token", "lfl0e6t5db07d55ecwdvr1dys7dixumg")
+	req.Header.Add("Authorization-Type", "apikey")
+	if err != nil {
+		return
+	}
+	res, _ := client.Do(req)
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	var resp EatApiResponse
+	if err := json.Unmarshal(body, &resp); err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	if resp.Code != 200 {
+		return
+	}
+	var str string
+	if len(resp.List) <= 0 {
+		return
+	}
+
+	str += "今天吃什么，我来给你建议：" + "\n"
+	for k, v := range resp.List {
+		str += strconv.Itoa(k+1) + " - " + v + "\n"
+	}
+	msg.ReplyText(str)
+
 }
 
 func getJx3Detail(msg *robot.Message, keyword string) {
