@@ -2,12 +2,19 @@ package jx3
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
 	"net/http"
+	"net/url"
+	"os"
 	"strconv"
+	"strings"
 
+	"github.com/FloatTech/AnimeAPI/pixiv"
+	"github.com/FloatTech/floatbox/web"
+	"github.com/lucas-clemente/quic-go/http3"
 	"github.com/lxlxw/go-wxbot/engine"
 	"github.com/lxlxw/go-wxbot/engine/robot"
 )
@@ -68,8 +75,94 @@ func (p *Jx3) OnEvent(msg *robot.Message) {
 				getEat(msg)
 				return
 			}
+
+			if strings.Contains(msg.Content, "来一张") {
+				getImages(msg)
+				return
+			}
 		}
 	}
+}
+
+type resultjson struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
+	Data    struct {
+		Illusts []struct {
+			ID          int64  `json:"id"`
+			Title       string `json:"title"`
+			AltTitle    string `json:"altTitle"`
+			Description string `json:"description"`
+			Type        int64  `json:"type"`
+			CreateDate  string `json:"createDate"`
+			UploadDate  string `json:"uploadDate"`
+			Sanity      int64  `json:"sanity"`
+			Width       int64  `json:"width"`
+			Height      int64  `json:"height"`
+			PageCount   int64  `json:"pageCount"`
+			Tags        []struct {
+				Name        string `json:"name"`
+				Translation string `json:"translation"`
+			} `json:"tags"`
+			Statistic struct {
+				Bookmarks int64 `json:"bookmarks"`
+				Likes     int64 `json:"likes"`
+				Comments  int64 `json:"comments"`
+				Views     int64 `json:"views"`
+			} `json:"statistic"`
+			Image string `json:"image"`
+		} `json:"illusts"`
+		Scores  []float64 `json:"scores"`
+		HasNext bool      `json:"has_next"`
+	} `json:"data"`
+}
+
+// soutuapi 请求api
+func soutuapi(keyword string) (r resultjson, err error) {
+	var data []byte
+	data, err = web.RequestDataWith(&http.Client{Transport: &http3.RoundTripper{}},
+		"https://api.pixivel.moe/v2/pixiv/illust/search/"+url.QueryEscape(keyword)+"?page=0",
+		"GET",
+		"https://pixivel.moe/",
+		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+	)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &r)
+	if err == nil && r.Error {
+		err = errors.New(r.Message)
+	}
+	return
+}
+
+func getImages(msg *robot.Message) {
+	keyword := strings.Trim(msg.Content, "来一张")
+	soutujson, err := soutuapi(keyword)
+	if err != nil {
+		return
+	}
+	rannum := rand.Intn(len(soutujson.Data.Illusts))
+	il := soutujson.Data.Illusts[rannum]
+	illust, err := pixiv.Works(il.ID)
+	if err != nil {
+		return
+	}
+	f := illust.Path(0)
+	if illust.DownloadToCache(0) != nil {
+		fmt.Println(err)
+		return
+	}
+
+	file, err := os.Open(f)
+	defer file.Close()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	msg.ReplyFile(file)
+
+	return
 }
 
 type EatApiResponse struct {
