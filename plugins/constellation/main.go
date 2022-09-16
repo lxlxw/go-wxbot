@@ -107,8 +107,11 @@ func geConstellationDetail(msg *robot.Message) {
 	if dateType == "today" || dateType == "tomorrow" {
 		str = geConsTodayDetail(body)
 		msg.ReplyText(str)
-	} else if dateType == "week" || dateType == "month" {
+	} else if dateType == "week" {
 		str = geConsWeekDetail(body)
+		msg.ReplyText(str)
+	} else if dateType == "month" {
+		str = geConsMonthDetail(body)
 		msg.ReplyText(str)
 	} else if dateType == "year" {
 		str = geConsYearDetail(body)
@@ -157,6 +160,28 @@ func geConsWeekDetail(body []byte) string {
 	str += "2、爱情：" + resp.Love + "\n"
 	str += "3、财运：" + resp.Money + "\n"
 	str += "4、工作：" + resp.Work + "\n"
+	if resp.All != "" {
+		str += "5、综合指数：" + resp.All
+	}
+	return str
+}
+
+func geConsMonthDetail(body []byte) string {
+	var str string
+	var resp CoWeekApiResponse
+	if err := json.Unmarshal(body, &resp); err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	if resp.Code != 0 {
+		return ""
+	}
+	str += "【" + resp.Date + resp.Name + "星座运势】" + "\n\n"
+
+	str += "1、" + resp.Health + "\n"
+	str += "2、" + resp.Love + "\n"
+	str += "3、" + resp.Money + "\n"
+	str += "4、" + resp.Work + "\n"
 	if resp.All != "" {
 		str += "5、综合指数：" + resp.All
 	}
