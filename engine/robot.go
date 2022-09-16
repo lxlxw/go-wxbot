@@ -3,6 +3,7 @@ package engine
 import (
 	"fmt"
 	"sync/atomic"
+	"time"
 
 	"github.com/eatmoreapple/openwechat"
 	"github.com/yqchilde/pkgs/log"
@@ -10,12 +11,16 @@ import (
 	"github.com/lxlxw/go-wxbot/engine/robot"
 )
 
+const layout = "2006-01-02 15:04:05"
+
+var duration = time.Minute * 15
+
 func InitRobot() {
 	// 使用桌面方式登录
 	bot := openwechat.DefaultBot(openwechat.Desktop)
 
 	// 关闭心跳回调
-	//bot.SyncCheckCallback = nil
+	bot.SyncCheckCallback = nil
 
 	// 登陆二维码回调
 	bot.UUIDCallback = openwechat.PrintlnQrcodeUrl
@@ -73,8 +78,9 @@ func InitRobot() {
 
 	var count int32
 	bot.MessageErrorHandler = func(err error) bool {
+		fmt.Println(err)
 		atomic.AddInt32(&count, 1)
-		if count == 3 {
+		if count == 5 {
 			bot.Logout()
 
 		}
@@ -103,6 +109,17 @@ func InitRobot() {
 
 		log.Println(robot.Groups)
 	}
+
+	go func() {
+		timer := time.NewTimer(duration)
+		f, _ := robot.Self.FileHelper()
+		for bot.Alive() {
+			<-timer.C
+			f.SendText(time.Now().Format(layout))
+			log.Printf("send file helper")
+			timer.Reset(duration)
+		}
+	}()
 
 	bot.Block()
 }
