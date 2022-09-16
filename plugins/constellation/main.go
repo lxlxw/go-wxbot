@@ -50,6 +50,16 @@ func (p *Constellation) OnEvent(msg *robot.Message) {
 		if msg.IsText() && strings.Contains(msg.Content, keyword) {
 			geConstellationDetail(msg)
 		}
+		if msg.Content == "星座运势" {
+			str := "🚀 输入 {星座}{日期}运势 => 获取星座运势\n\n"
+			str += "示例：\n"
+			str += "1 - 白羊座今日运势 \n"
+			str += "2 - 双鱼座明日运势 \n"
+			str += "3 - 天蝎座本周运势 \n"
+			str += "4 - 金牛座本月运势 \n"
+			str += "5 - 金牛座今年运势"
+			msg.ReplyText(str)
+		}
 	}
 }
 
