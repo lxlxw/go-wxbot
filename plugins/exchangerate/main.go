@@ -24,7 +24,7 @@ var curr = map[string]string{
 	"人民币":   "CNY",
 	"美元":    "USD",
 	"欧元":    "EUR",
-	"日元":    "100JPY",
+	"日元":    "JPY",
 	"港币":    "HKD",
 	"英镑":    "GBP",
 	"澳元":    "AUD",
@@ -38,6 +38,12 @@ var curr = map[string]string{
 	"丹麦克朗":  "DKK",
 	"瑞典克朗":  "SEK",
 	"泰铢":    "THB",
+	"加拿大元":  "CAD",
+	"澳门元":   "MOP",
+	"墨西哥元":  "MXN",
+	"泰元":    "THB",
+	"台币":    "TWD",
+	"越南盾":   "VND",
 }
 
 var (
@@ -83,8 +89,7 @@ func getExDetail(msg *robot.Message) {
 			return
 		}
 	}
-
-	apiUrl := fmt.Sprintf("%s?from=%s&to=%s&app_id=%s&app_secret=%s", exConf.Url, from, to, exConf.AppId, exConf.AppSecret)
+	apiUrl := fmt.Sprintf("%s?key=%s&from=%s&to=%s", exConf.Url, exConf.AppSecret, from, to)
 
 	res, err := http.Get(apiUrl)
 	if err != nil {
@@ -103,12 +108,18 @@ func getExDetail(msg *robot.Message) {
 		log.Errorf("getExDetail unmarshal error: %v", err)
 		return
 	}
-	if resp.Code != 1 {
+	if resp.Code != 0 {
 		log.Errorf("getExDetail api error: %v", resp.Msg)
 		return
 	}
+	var str string
+	str += resp.Data[0].CurrencyF_Name + "(" + resp.Data[0].CurrencyF + ")/" + resp.Data[0].CurrencyT_Name + "(" + resp.Data[0].CurrencyT + ")\n"
+	str += "当前汇率为：" + resp.Data[0].Exchange + "\n\n"
 
-	detail := fmt.Sprintf(`%s（%s），实时汇率为：%s`, resp.Data.NameDesc, resp.Data.Name, resp.Data.Price)
+	str += resp.Data[1].CurrencyF_Name + "(" + resp.Data[1].CurrencyF + ")/" + resp.Data[1].CurrencyT_Name + "(" + resp.Data[1].CurrencyT + ")\n"
+	str += "当前汇率为：" + resp.Data[1].Exchange + "\n\n"
 
-	msg.ReplyText(detail)
+	str += "更新时间：" + resp.Data[1].UpdateTime + "\n"
+
+	msg.ReplyText(str)
 }
