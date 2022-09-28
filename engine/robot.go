@@ -16,11 +16,32 @@ const layout = "2006-01-02 15:04:05"
 var duration = time.Minute * 15
 
 func InitRobot() {
+	start := time.Now()
 	// 使用桌面方式登录
 	bot := openwechat.DefaultBot(openwechat.Desktop)
 
 	// 关闭心跳回调
-	bot.SyncCheckCallback = nil
+	bot.SyncCheckCallback = func(resp openwechat.SyncCheckResponse) {
+		if resp.RetCode == "1100" {
+			end := time.Now()
+			s := end.Sub(start)
+			log.Println(fmt.Sprintf("微信已退出%s至%s，持续：%s", start, end, s))
+		}
+		switch resp.Selector {
+		case "0":
+			log.Println("正常")
+		case "2", "6":
+			log.Println("有新消息")
+		case "7":
+			log.Println("进入/离开聊天界面")
+			err := bot.WebInit()
+			if err != nil {
+				log.Println(fmt.Sprintf("重新初始化失败：%v", err))
+			}
+		default:
+			log.Println(fmt.Sprintf("RetCode：%s Selector: %s", resp.RetCode, resp.Selector))
+		}
+	}
 
 	// 登陆二维码回调
 	bot.UUIDCallback = openwechat.PrintlnQrcodeUrl
@@ -78,7 +99,6 @@ func InitRobot() {
 
 	var count int32
 	bot.MessageErrorHandler = func(err error) bool {
-		fmt.Println(err)
 		atomic.AddInt32(&count, 1)
 		if count == 5 {
 			bot.Logout()
@@ -109,17 +129,6 @@ func InitRobot() {
 
 		log.Println(robot.Groups)
 	}
-
-	go func() {
-		timer := time.NewTimer(duration)
-		f, _ := robot.Self.FileHelper()
-		for bot.Alive() {
-			<-timer.C
-			f.SendText(time.Now().Format(layout))
-			log.Printf("send file helper")
-			timer.Reset(duration)
-		}
-	}()
 
 	bot.Block()
 }
