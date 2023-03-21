@@ -1,3 +1,3 @@
 # go-wxbot
 
-test
+fork https://github.com/yqchilde/wxbot
